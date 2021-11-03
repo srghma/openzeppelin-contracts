@@ -37,7 +37,16 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
 
     /**
      * @dev See {IERC20Permit-permit}.
-     */
+     */// gasless
+
+     two main benefits:
+
+transactions involving ERC-20 operations can be paid using the token itself rather than ETH, -- ok
+approve and pull operations can happen in a single transaction instead of two consecutive transactions -- not exactly, approve is offchain, pull (by smc) is on-chain
+
+If the user needs to interact with a smart contract, then they need to make 2 transactions (approve and the smart contract call which will internally call transferFrom
+
+
     function permit(
         address owner,
         address spender,
@@ -78,10 +87,10 @@ abstract contract ERC20Permit is ERC20, IERC20Permit, EIP712 {
      * @dev "Consume a nonce": return the current value and increment.
      *
      * _Available since v4.1._
-     */
+     *///invalidate permission
     function _useNonce(address owner) internal virtual returns (uint256 current) {
         Counters.Counter storage nonce = _nonces[owner];
-        current = nonce.current();
+        current = nonce.current();//not returned
         nonce.increment();
     }
 }
